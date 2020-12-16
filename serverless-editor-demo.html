@@ -92,8 +92,8 @@
 				}
 
 				const userData = {
-					name: 'Joe',
-					avatar: 'https://i.pinimg.com/originals/23/83/05/23830543c752e21bd1c436e548154516.jpg',
+					name: 'John',
+					avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgVUEjaWnHvhNaEy1-Jl6Ljvi7ahounqegSQ',
 				}
 				const blockArray = {
 					'email-blocks': [],
@@ -297,15 +297,15 @@
 						const selectedItem = await Vue.$listSelect('Select an expression', [
 							{
 								label: 'Expression 1',
-								value: 'https://www.youtube.com/watch?v=By8OY6WTVE8',
+								value: '<your_expression_1>',
 							},
 							{
 								label: 'Expression 2',
-								value: 'https://www.youtube.com/watch?v=bcTYHwiVDKE',
+								value: '<your_expression_2>',
 							},
 							{
 								label: 'Expression 3',
-								value: 'https://youtu.be/tkjXxmlbU4U?t=16',
+								value: '<your_expression_3>',
 							},
 						])
 						resolve({ expression: selectedItem ? selectedItem.value : expression })
