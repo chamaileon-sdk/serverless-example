@@ -11,7 +11,7 @@ Please upload the demo html to your server. Please note that your API access is 
 
 
 ### Local computer
-To use the demo application from your local computer, you need to run the html file from the `localhost`, e. g. with a [static-server](https://www.npmjs.com/package/static-server). Please, use ports given in your environment, if not specified, use the port 50511.
+To use the demo application from your local computer, you need to serve the HTML file from your `localhost`, e. g. with a [static-server](https://www.npmjs.com/package/static-server). Please, use ports given in your environment, if not specified, use the port 50511.
 
 ```console
 $ npm -g install static-server
