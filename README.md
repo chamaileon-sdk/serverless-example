@@ -2,7 +2,7 @@
 
 You can try the serverless chamaileon email editor plugin with the `serverless-editor-demo.html` file, provided in this repository.
 
-In the demo application please copy yor API key to get an accessToken, then you can initialize Chamaileon SDK and open and use the email editor.
+In the demo application please copy your API key to the corresponding field in order to get an `accessToken` which is needed to initialize Chamaileon SDK (so you can open and use the email editor).
 
 ## Installation
 
