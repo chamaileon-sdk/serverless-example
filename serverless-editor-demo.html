@@ -5,9 +5,12 @@
   <link href='https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css' rel='stylesheet'>
   <link href='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css' rel='stylesheet'>
   <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'>
+  <style>
+	  [v-cloak] { display: none; }
+  </style>
 </head>
 <body>
-  <div id='app'>
+  <div id='app' v-cloak>
 	<v-app>
 		<v-main>
 			<v-container>
@@ -26,7 +29,9 @@
 					block
 					small
 					x-large
-				>Generate access token</v-btn>
+				>
+					Generate access token
+				</v-btn>
 				<div class='my-4'></div>
 				<v-btn
 					:disabled='!chamaileonPlugins'
@@ -37,7 +42,28 @@
 					elevation='6'
 					small
 					x-large
-				>Open editor</v-btn>
+				>
+					Open editor
+				</v-btn>
+
+				<v-snackbar
+					v-model='authErrorInfo'
+					timeout='4000'
+					color='red'
+					shaped
+      				top
+				>
+					Unauthorized: Access is denied due to invalid credentials
+					<template v-slot:action='{ attrs }'>
+						<v-btn
+							text
+							v-bind='attrs'
+							@click='snackbar = false'
+						>
+							Close
+						</v-btn>
+					</template>
+				</v-snackbar>
 			</v-container>
 		</v-main>
 	</v-app>
@@ -55,6 +81,7 @@
 			return {
 				chamaileonPlugins: null,
 				apiKey: '',
+				authErrorInfo: false,
 			}
 	  	},
 		methods: {
@@ -69,6 +96,12 @@
 						'Authorization': `Bearer ${this.apiKey}`,
 					},
 				})
+
+				if (!accessTokenRequest.ok) {
+					this.authErrorInfo = true
+
+					return
+				}
 
 				const accessTokenResponse = await accessTokenRequest.json()
 				const accessToken = accessTokenResponse.result
