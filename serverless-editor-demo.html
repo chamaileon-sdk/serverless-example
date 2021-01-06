@@ -9,19 +9,37 @@
 <body>
   <div id='app'>
 	<v-app>
-	  <v-main>
-		<v-container>
-		  <v-btn
-			:disabled='!chamaileonPlugins'
-			@click='openEditor'
-			block
-			color='red'
-			elevation='24'
-			small
-			x-large
-		  >Open editor</v-btn>
-		</v-container>
-	  </v-main>
+		<v-main>
+			<v-container>
+				<v-text-field
+					:disabled='!!chamaileonPlugins'
+					v-model='apiKey'
+					counter='25'
+					label='Insert API key here'
+				></v-text-field>
+				<v-btn
+					:disabled='!apiKey || !!chamaileonPlugins'
+					@click='generateToken'
+					class='white--text'
+					color='orange'
+					elevation='6'
+					block
+					small
+					x-large
+				>Generate access token</v-btn>
+				<div class='my-4'></div>
+				<v-btn
+					:disabled='!chamaileonPlugins'
+					@click='openEditor'
+					class='white--text'
+					block
+					color='red'
+					elevation='6'
+					small
+					x-large
+				>Open editor</v-btn>
+			</v-container>
+		</v-main>
 	</v-app>
   </div>
 
@@ -32,36 +50,56 @@
   <script>
 	new Vue({
 		el: '#app',
-	  	vuetify: new Vuetify(),
-	  	data() {
+		vuetify: new Vuetify(),
+		data() {
 			return {
-				chamaileonPlugins: null
+				chamaileonPlugins: null,
+				apiKey: "",
 			}
 	  	},
-	  	async mounted() {
-		  	this.chamaileonPlugins = await chamaileonSdk.init({
-				mode: 'serverless',
-				whitelabel: {
-					urls: {
-						splashScreen: 'https://example.com',
-						createLogoJS: 'https://demo-staging.chamaileon.io/createLogo.js',
-					},
-					colors: {
-						'primary': '#FF0000',
-						'secondary': '#009f4a',
-						'red': '#ff5546',
-						'darkBlue': '#2d3291',
-						'darkGreen': '#00af6e',
-						'lightGreen': '#50d791',
-						'weirdGreen': '#50d791',
-						'pink': '#ff91a0',
-						'yellow': '#ffd23c',
-					},
-				},
-			})
-		},
 		methods: {
+			async generateToken() {
+				if (this.chamaileonPlugins) {
+					return
+				}
+
+				const accessTokenRequest = await fetch('https://sdk-api.chamaileon.io/api/v1/tokens/generate', {
+					method: 'GET', // or 'PUT'
+					headers: {
+						'Authorization': `Bearer ${this.apiKey}`,
+					},
+				})
+
+				const accessTokenResponse = await accessTokenRequest.json()
+				const accessToken = accessTokenResponse.result
+
+				this.chamaileonPlugins = await chamaileonSdk.init({
+					mode: 'serverless',
+					accessToken,
+					whitelabel: {
+						urls: {
+							splashScreen: 'https://example.com',
+							createLogoJS: 'https://demo.chamaileon.io/createLogo.js',
+						},
+						colors: {
+							'primary': '#FF0000',
+							'secondary': '#009f4a',
+							'red': '#ff5546',
+							'darkBlue': '#2d3291',
+							'darkGreen': '#00af6e',
+							'lightGreen': '#50d791',
+							'weirdGreen': '#50d791',
+							'pink': '#ff91a0',
+							'yellow': '#ffd23c',
+						},
+					},
+				})
+			},
 			async openEditor() {
+				if (!this.chamaileonPlugins) {
+					return
+				}
+
 				const self = this
 
 				let emailJsonToLoad = { // starting with an empty email
