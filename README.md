@@ -4,8 +4,6 @@ You can try the serverless chamaileon email editor plugin with the `serverless-e
 
 In the demo application please copy yor API key to get an accessToken, then you can initialize Chamaileon SDK and open and use the email editor.
 
-Please, note that 
-
 ## Installation
 
 ### Remote host
