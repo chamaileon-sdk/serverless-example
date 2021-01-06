@@ -7,7 +7,7 @@ In the demo application please copy your API key to the corresponding field in o
 ## Installation
 
 ### Remote host
-Please upload the demo html to your server. Please note that your API access is limited to domains specified in your environment in order to ensure the authorized usage.
+Please upload the demo HTML to your server. Please note that your API access is limited to domains specified in your environment in order to ensure the authorized usage.
 
 
 ### Local computer
