@@ -10,11 +10,12 @@ In the demo application please copy yor API key to get an accessToken, then you 
 Please upload the demo html to your server. Please note that your API access is limited to domains specified in your environment in order to ensure the authorized usage.
 
 
-### Local comupter
-To use the demo application from your local computer, you need to run the html file from the `localhost`, e. g. with a [static-server](https://www.npmjs.com/package/static-server). Please, use ports given in your environment, if not specified, use the default port 50511.
+### Local computer
+To use the demo application from your local computer, you need to run the html file from the `localhost`, e. g. with a [static-server](https://www.npmjs.com/package/static-server). Please, use ports given in your environment, if not specified, use the port 50511.
 
 ```console
 $ npm -g install static-server
 $ static-server -p 50511 -i serverless-editor-demo.html
 ```
 
+Once the static server runs, you can open and use the application from your browser at http://localhost:50511.
