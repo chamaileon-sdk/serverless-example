@@ -20,6 +20,22 @@
 					counter='25'
 					label='Insert API key here'
 				></v-text-field>
+				<v-divider></v-divider>
+				<v-text-field
+					:disabled='!!chamaileonPlugins'
+					v-model='createLogoUrl'
+					label='Change logo url'
+				></v-text-field>
+				<v-text-field
+					:disabled='!!chamaileonPlugins'
+					v-model='splashScreenUrl'
+					label='Change splashScreen url'
+				></v-text-field>
+				<v-text-field
+					:disabled='!!chamaileonPlugins'
+					v-model='primaryColor'
+					label='Change primary color (use rgb CSS compatitible format)'
+				></v-text-field>
 				<v-btn
 					:disabled='!apiKey || !!chamaileonPlugins'
 					@click='generateToken'
@@ -82,8 +98,55 @@
 				chamaileonPlugins: null,
 				apiKey: '',
 				authErrorInfo: false,
+				defaultConfig: {
+					mode: 'serverless',
+					accessToken: null,
+					whitelabel: {
+						urls: {
+							splashScreen: 'https://example.com',
+							createLogoJS: 'https://demo.chamaileon.io/createLogo.js',
+						},
+						colors: {
+							'primary': '#FF0000',
+							'secondary': '#009f4a',
+							'red': '#ff5546',
+							'darkBlue': '#2d3291',
+							'darkGreen': '#00af6e',
+							'lightGreen': '#50d791',
+							'weirdGreen': '#50d791',
+							'pink': '#ff91a0',
+							'yellow': '#ffd23c',
+						}
+					}
+				}
 			}
-	  	},
+		  },
+		computed: {
+			createLogoUrl: {
+				get() {
+					return this.defaultConfig.whitelabel.urls.createLogoJS
+				},
+				set(value) {
+					this.defaultConfig.whitelabel.urls.createLogoJS = value
+				},
+			},
+			splashScreenUrl: {
+				get() {
+					return this.defaultConfig.whitelabel.urls.splashScreen
+				},
+				set(value) {
+					this.defaultConfig.whitelabel.urls.splashScreen = value
+				},
+			},
+			primaryColor: {
+				get() {
+					return this.defaultConfig.whitelabel.colors.primary
+				},
+				set(value) {
+					this.defaultConfig.whitelabel.colors.primary = value
+				}
+			}
+		},
 		methods: {
 			async generateToken() {
 				if (this.chamaileonPlugins) {
@@ -106,27 +169,9 @@
 				const accessTokenResponse = await accessTokenRequest.json()
 				const accessToken = accessTokenResponse.result
 
-				this.chamaileonPlugins = await chamaileonSdk.init({
-					mode: 'serverless',
-					accessToken,
-					whitelabel: {
-						urls: {
-							splashScreen: 'https://example.com',
-							createLogoJS: 'https://demo.chamaileon.io/createLogo.js',
-						},
-						colors: {
-							'primary': '#FF0000',
-							'secondary': '#009f4a',
-							'red': '#ff5546',
-							'darkBlue': '#2d3291',
-							'darkGreen': '#00af6e',
-							'lightGreen': '#50d791',
-							'weirdGreen': '#50d791',
-							'pink': '#ff91a0',
-							'yellow': '#ffd23c',
-						},
-					},
-				})
+				this.defaultConfig.accessToken = accessToken
+
+				this.chamaileonPlugins = await chamaileonSdk.init(this.defaultConfig)
 			},
 			async openEditor() {
 				if (!this.chamaileonPlugins) {
