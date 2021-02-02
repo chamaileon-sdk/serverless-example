@@ -88,7 +88,7 @@
   <script src='https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js'></script>
   <script src='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js'></script>
   <script src='https://unpkg.com/vuetify-list-plugin@0.1.1/dist/list-plugin.umd.js'></script>
-  <script src='http://localhost:50004/static/chamaileonSdk.js'></script>
+  <script src='https://plugins.chamaileon.io/static/chamaileonSdk.js'></script>
   <script>
 	new Vue({
 		el: '#app',
@@ -116,10 +116,9 @@
 							'weirdGreen': '#50d791',
 							'pink': '#ff91a0',
 							'yellow': '#ffd23c',
-						},
-					},
-					environmentName: "serverless-dev"
-				},
+						}
+					}
+				}
 			}
 		  },
 		computed: {
@@ -169,6 +168,8 @@
 
 				const accessTokenResponse = await accessTokenRequest.json()
 				const accessToken = accessTokenResponse.result
+
+				this.defaultConfig.accessToken = accessToken
 
 				this.chamaileonPlugins = await chamaileonSdk.init(this.defaultConfig)
 			},
