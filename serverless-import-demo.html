@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href='https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900' rel='stylesheet'>
+  <link href='https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css' rel='stylesheet'>
+  <link href='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css' rel='stylesheet'>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui'>
+  <style>
+	  [v-cloak] { display: none; }
+
+	  #import-frame > iframe {
+		width: 100%;
+		height: 600px;
+		border-width: 0;
+	  }
+  </style>
+</head>
+<body>
+  <div id='app' v-cloak>
+	<v-app>
+		<v-main>
+			<v-container>
+				<v-text-field
+					:disabled='!!chamaileonPlugins'
+					v-model='apiKey'
+					counter='25'
+					label='Insert API key here'
+				></v-text-field>
+				<v-btn
+					:disabled='!apiKey || !!chamaileonPlugins'
+					@click='generateToken'
+					class='white--text'
+					color='orange'
+					elevation='6'
+					block
+					small
+					x-large
+				>
+					Generate access token
+				</v-btn>
+				<div class='my-4'></div>
+				<v-btn
+					:disabled='!chamaileonPlugins'
+					@click='attachImport'
+					class='white--text'
+					block
+					color='red'
+					elevation='6'
+					small
+					x-large
+				>
+					Add HTML Import
+				</v-btn>
+
+				<v-snackbar
+					v-model='authErrorInfo'
+					timeout='4000'
+					color='red'
+					shaped
+      				top
+				>
+					Unauthorized: Access is denied due to invalid credentials
+					<template v-slot:action='{ attrs }'>
+						<v-btn
+							text
+							v-bind='attrs'
+							@click='snackbar = false'
+						>
+							Close
+						</v-btn>
+					</template>
+				</v-snackbar>
+				<div id='import-frame'></div>
+			</v-container>
+		</v-main>
+	</v-app>
+  </div>
+
+  <script src='https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js'></script>
+  <script src='https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js'></script>
+  <script src='https://unpkg.com/vuetify-list-plugin@0.1.1/dist/list-plugin.umd.js'></script>
+  <script src='https://plugins.chamaileon.io/static/chamaileonSdk.js'></script>
+  <script>
+	new Vue({
+		el: '#app',
+		vuetify: new Vuetify(),
+		data() {
+			return {
+				chamaileonPlugins: null,
+				apiKey: '',
+				authErrorInfo: false,
+				defaultConfig: {
+					mode: 'serverless',
+					accessToken: null,
+					whitelabel: {
+						urls: {
+							splashScreen: 'https://example.com',
+							createLogoJS: 'https://demo.chamaileon.io/createLogo.js',
+						},
+						colors: {
+							'primary': '#FF0000',
+							'secondary': '#009f4a',
+							'red': '#ff5546',
+							'darkBlue': '#2d3291',
+							'darkGreen': '#00af6e',
+							'lightGreen': '#50d791',
+							'weirdGreen': '#50d791',
+							'pink': '#ff91a0',
+							'yellow': '#ffd23c',
+						}
+					}
+				}
+			}
+		},
+		methods: {
+			async generateToken() {
+				if (this.chamaileonPlugins) {
+					return
+				}
+
+				const accessTokenRequest = await fetch('https://sdk-api.chamaileon.io/api/v1/tokens/generate', {
+					method: 'GET',
+					headers: {
+						'Authorization': `Bearer ${this.apiKey}`,
+					},
+				})
+
+				if (!accessTokenRequest.ok) {
+					this.authErrorInfo = true
+
+					return
+				}
+
+				const accessTokenResponse = await accessTokenRequest.json()
+				const accessToken = accessTokenResponse.result
+
+				this.defaultConfig.accessToken = accessToken
+
+				this.chamaileonPlugins = await chamaileonSdk.init(this.defaultConfig)
+			},
+			async attachImport() {
+				if (!this.chamaileonPlugins) {
+					return
+				}
+
+				await this.chamaileonPlugins.openHtmlImport({
+					container: '#import-frame',
+					hooks: {
+						onImportFinished(data) {
+							console.log('Result: ', data)
+						},
+						onError() {},
+						onCancel() {},
+						onAfterClose() {}
+					}
+				})
+
+
+			}
+		}
+	})
+  </script>
+</body>
+</html>
